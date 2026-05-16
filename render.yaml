@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: AgGlory
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app -w 2 -k gthread --threads 4 -b 0.0.0.0:$PORT --timeout 120
+    envVars:
+      - key: FLASK_SECRET
+        generateValue: true
+      - key: FERNET_KEY
+        sync: false        # paste: python -c "from cryptography.fernet import Fernet;print(Fernet.generate_key().decode())"
+      - key: STATIC_DIR
+        value: ./public
+      - key: PYTHON_VERSION
+        value: "3.11"
+    disk:
+      name: ffglory-data
+      mountPath: /var/data
+      sizeGB: 1
